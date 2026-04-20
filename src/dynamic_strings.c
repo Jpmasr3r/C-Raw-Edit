@@ -4,12 +4,14 @@
 #include <string.h>
 #include "dynamic_strings.h"
 
+#define BUFFER_BASE 32
+
 // String pointers
 String* string_new()
 {
 	String* str = (String*)malloc(sizeof(String));
 	str->data = (char*)malloc(sizeof(char) * 120);
-	str->buffer = 1024;
+	str->buffer = BUFFER_BASE;
 	str->length = 0;
 
 	return str;
@@ -23,6 +25,7 @@ String* string_input()
 
 	getline(&(str->data), &(str->buffer), stdin);
 
+	str->buffer += BUFFER_BASE;
 	str->data[strcspn(str->data, "\n")] = '\0';
 	str->length = strlen(str->data);
 
@@ -34,50 +37,11 @@ String* string_from(char* str_from)
 	String* str = (String*)malloc(sizeof(String));
 	size_t new_length = strlen(str_from);
 
-	str->buffer = new_length + 1024;
+	str->buffer = new_length + BUFFER_BASE;
 	str->data = malloc(str->buffer);
 	memcpy(str->data, str_from, new_length + 1);
 
 	str->length = new_length;
-	return str;
-}
-
-String* string_push(String* str, char* value)
-{
-	if (value == NULL)
-	{
-		return str;
-	}
-
-	size_t value_len = strlen(value);
-	size_t new_size = str->length + value_len;
-
-	if (new_size + 1 > str->buffer)
-	{
-		while (str->buffer < new_size + 1)
-		{
-			if (str->buffer < 1024)
-			{
-				str->buffer *= 2;
-			}
-			else
-			{
-				str->buffer += 1024;
-			}
-
-			char* tmp = realloc(str->data, str->buffer);
-			if (tmp == NULL)
-			{
-				return str;
-			}
-
-			str->data = tmp;
-		}
-	}
-
-	memcpy(str->data + str->length, value, value_len);
-	str->length = new_size;
-	str->data[str->length] = '\0';
 	return str;
 }
 
@@ -104,15 +68,14 @@ string_insert(String* str, char* value, size_t index)
 			{
 				str->buffer += 1024;
 			}
-
-			char* tmp = realloc(str->data, str->buffer);
-			if (tmp == NULL)
-			{
-				return str;
-			}
-
-			str->data = tmp;
 		}
+		char* tmp = realloc(str->data, str->buffer);
+		if (tmp == NULL)
+		{
+			return str;
+		}
+
+		str->data = tmp;
 	}
 
 	memmove(
@@ -127,10 +90,51 @@ string_insert(String* str, char* value, size_t index)
 	return str;
 }
 
+String* string_push(String* str, char* value)
+{
+	// return string_insert(str, value, str->length);
+	if (value == NULL)
+	{
+		return str;
+	}
+
+	size_t value_len = strlen(value);
+	size_t new_size = str->length + value_len;
+
+	if (new_size + 1 > str->buffer)
+	{
+		while (str->buffer < new_size + 1)
+		{
+			if (str->buffer < 1024)
+			{
+				str->buffer *= 2;
+			}
+			else
+			{
+				str->buffer += 1024;
+			}
+		}
+		char* tmp = realloc(str->data, str->buffer);
+		if (tmp == NULL)
+		{
+			return str;
+		}
+
+		str->data = tmp;
+	}
+
+	memcpy(str->data + str->length, value, value_len);
+	str->length = new_size;
+	str->data[str->length] = '\0';
+	return str;
+}
+
 String* string_remove_at(String* str, size_t index)
 {
 	if (index >= str->length)
+	{
 		return str;
+	}
 
 	memmove(
 		str->data + index,
@@ -144,9 +148,11 @@ String* string_remove_at(String* str, size_t index)
 
 String* string_clear(String* str)
 {
+	if (!str || !str->data)
+		return str;
+
 	str->length = 0;
-	str->buffer = 1024;
-	str->data = "";
+	str->data[0] = '\0';
 	return str;
 }
 
