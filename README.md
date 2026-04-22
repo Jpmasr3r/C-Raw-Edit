@@ -1,84 +1,110 @@
 # C-Raw-Edit
 
-🖥️ A minimal low-level C text editor for the terminal.
+A minimal terminal-based text editor written entirely from scratch in C, exploring low-level system programming concepts.
 
----
+## Features
 
-## ⚙️ Features
-
-- Terminal-based text editing
-- Cursor movement with arrow keys
-- Character insertion at cursor position
-- Backspace support
+- Terminal-based text editing with raw mode input
+- Cursor movement (arrow keys)
+- Character insertion and deletion (backspace)
 - File loading and saving
-- Raw terminal mode (no canonical input, no echo)
-- Escape sequence parsing for special keys
+- Escape sequence parsing for terminal keys
+- Status messages display
 
----
+## Keybindings
 
-## 🧪 Concepts explored
+| Key | Action |
+|-----|--------|
+| `←` `→` `↑` `↓` | Move cursor |
+| `Backspace` | Delete character before cursor |
+| `Ctrl+S` | Save file |
+| `Ctrl+Q` | Exit editor |
 
-This project is built from scratch to explore:
+## Building
 
-- Low-level memory management (`malloc`, `realloc`, `memmove`)
+```bash
+cmake -B build
+cmake --build build
+```
+
+Or manually:
+
+```bash
+gcc -o c_raw_edit src/*.c libs/dynamic-Strings/src/*.c -O2 -Iinclude -Ilibs/dynamic-Strings/include
+```
+
+## Running
+
+```bash
+./c_raw_edit 
+```
+
+If the file does not exist, it will be created automatically. Defaults to `default.txt` if no argument provided.
+
+## Architecture
+
+### Core Components
+
+| File | Purpose |
+|------|---------|
+| `src/main.c` | Entry point, terminal initialization |
+| `src/editor.c` | Editor operations (read, write, save, move) |
+| `src/utils.c` | Utility functions |
+| `include/editor.h` | Editor struct and public API |
+| `include/utils.h` | Utility declarations |
+
+### Editor Flow
+
+1. `main()` opens or creates file via `editor_new()`
+2. Initial screen rendered via `editor_write()`
+3. Terminal set to raw mode via `terminal_init()`
+4. Input loop in `editor_read()` processes:
+   - Escape sequences for arrow keys
+   - Character input for typing
+   - Shortcuts (Ctrl+S, Ctrl+Q)
+5. On exit, terminal restored and resources freed
+
+### Dependencies
+
+- **dynamic-Strings** (`libs/dynamic-Strings/`) - Custom C string library with automatic buffer management
+
+## Concepts Explored
+
+This project demonstrates:
+
+- Raw terminal I/O with `termios`
+- Manual memory management (`malloc`, `realloc`, `memmove`)
 - Unix system calls (`read`, `write`, `fopen`, `fwrite`)
-- Terminal control with `termios`
-- Manual string manipulation
-- Escape sequence parsing (arrow keys, ESC handling)
+- Escape sequence parsing for special keys
+- Manual string operations
 
----
+## Limitations
 
-## ⌨️ Controls
+- No undo/redo
+- No syntax highlighting
+- No scrolling support
+- Single-line buffer mode (loads 1024 bytes)
+- Experimental - not production-ready
 
-- `← → ↑ ↓` → move cursor
-- `BACKSPACE` → delete character
-- `CTRL+S` → save file
-- `CTRL+Q` → exit editor
+## Project Structure
 
----
-
-## 🏗️ Build
-
-```bash
-cmake
+```
+raw-Editor/
+├── CMakeLists.txt           # Build configuration
+├── include/
+│   ├── editor.h            # Editor public API
+│   └── utils.h             # Utility declarations
+├── src/
+│   ├── main.c              # Entry point
+│   ├── editor.c            # Editor implementation
+│   └── utils.c             # Utility functions
+├── libs/
+│   └── dynamic-Strings/    # String library
+│       ├── include/
+│       └── src/
+└── build/                 # Build output
 ```
 
-or manually:
+## License
 
-```bash
-gcc -o c_raw_edit *.c -O2
-```
-
-🚀 Run
-
-```bash
-./c_raw_edit file.txt
-```
-
-If the file does not exist, it will be created automatically.
-
----
-
-## 🧠 How it works
-
-Input is read in raw mode using termios
-Each key is processed manually via read()
-Arrow keys are decoded from escape sequences (\x1b[A, etc.)
-Text is stored in a dynamic string structure
-Insert/delete operations are handled with memmove for efficiency
-Screen is redrawn after every input cycle
-
----
-
-## ⚠️ Notes
-
-This project is experimental and not production-ready
-No undo/redo system yet
-No syntax highlighting
-No scrolling system implemented yet
-
----
-
-## 📜 License
-
-This project uses the **GPLv2** license.
+GNU General Public License v2.0

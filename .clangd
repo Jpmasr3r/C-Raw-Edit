@@ -1,0 +1,9 @@
+CompileFlags:
+  Add: [-Wall, -Wextra, -Wpedantic]
+
+Diagnostics:
+  Suppress:
+    - unused-includes
+    - unused-function
+    - unused-parameter
+    - unused-variable

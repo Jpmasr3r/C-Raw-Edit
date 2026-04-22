@@ -1,10 +1,10 @@
+#include "editor.h"
+#include "dynamic_strings.h"
+#include "utils.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "dynamic_strings.h"
-#include "utils.h"
-#include "editor.h"
 
 FILE* file_open(char* path)
 {
@@ -28,11 +28,7 @@ Editor* editor_set_data(Editor* editor)
 		exit(1);
 	}
 
-	fseek(
-		editor->file,
-		int_max(0, editor->jumps) * editor->buffer,
-		SEEK_SET
-	);
+	fseek(editor->file, int_max(0, editor->jumps) * editor->buffer, SEEK_SET);
 	char* tmp = malloc(editor->buffer);
 	if (tmp == NULL)
 	{
@@ -65,16 +61,12 @@ void editor_close(Editor* editor)
 	fclose(editor->file);
 	free(editor);
 	return;
-};
+}
 
 Editor* editor_write(Editor* editor)
 {
 	write(STDOUT_FILENO, "\033[H\033[J", 6);
-	printf(
-		"Line %zu\n File Open : %s\n",
-		editor->position,
-		editor->filePath
-	);
+	printf("Line %zu\n File Open : %s\n", editor->position, editor->filePath);
 	printf("%s\n", editor->message->data);
 	for (size_t i = 0; i < editor->string->length; i++)
 	{
@@ -115,12 +107,8 @@ Editor* editor_save(Editor* editor)
 		return editor;
 	}
 
-	size_t written = fwrite(
-		editor->string->data,
-		1,
-		editor->string->length,
-		file
-	);
+	size_t written =
+		fwrite(editor->string->data, 1, editor->string->length, file);
 
 	if (written != editor->string->length)
 	{
@@ -211,11 +199,7 @@ Editor* editor_read(Editor* editor)
 				c_buffer[0] = c;
 				c_buffer[1] = '\0';
 				// string_push(editor->string, c_buffer);
-				string_insert(
-					editor->string,
-					c_buffer,
-					editor->position
-				);
+				string_insert(editor->string, c_buffer, editor->position);
 				editor->position++;
 				break;
 			}
@@ -227,7 +211,7 @@ Editor* editor_read(Editor* editor)
 	return editor;
 }
 
-struct termios* terminal_init()
+struct termios* terminal_init(void)
 {
 	struct termios* oldt = malloc(sizeof(struct termios));
 	struct termios newt;

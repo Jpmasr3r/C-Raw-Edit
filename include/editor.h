@@ -1,8 +1,9 @@
 #ifndef EDITOR_H
 #define EDITOR_H
+#include <stdio.h>
 #include <termios.h>
 #include "dynamic_strings.h"
-#define CTRL_KEY(k) ((k) & 0x1f)
+#define CTRL_KEY(key) ((key) & 0x1f)
 
 typedef struct Editor
 {
@@ -47,6 +48,6 @@ Editor* editor_move(Editor* editor, enum SIDES side);
 
 void editor_close(Editor* editor);
 
-struct termios* terminal_init();
+struct termios* terminal_init(void);
 
 #endif

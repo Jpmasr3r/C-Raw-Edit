@@ -5,14 +5,9 @@ project(main C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(main src/main.c src/utils.c src/dynamic_strings.c src/editor.c)
+add_subdirectory(libs/dynamic-Strings)
 
-# target_compile_options(main PRIVATE
-#     -Wall
-#     -Wextra
-#     -Werror
-#     $<$<CONFIG:Debug>:-g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer>
-#     $<$<CONFIG:Release>:-O2 -DNDEBUG>
-# )
+add_executable(main src/main.c src/utils.c src/editor.c)
 
+target_link_libraries(main dynamic_strings)
 target_include_directories(main PRIVATE include)
