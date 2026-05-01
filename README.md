@@ -13,12 +13,12 @@ A minimal terminal-based text editor written entirely from scratch in C, explori
 
 ## Keybindings
 
-| Key | Action |
-|-----|--------|
-| `←` `→` `↑` `↓` | Move cursor |
-| `Backspace` | Delete character before cursor |
-| `Ctrl+S` | Save file |
-| `Ctrl+Q` | Exit editor |
+| Key             | Action                         |
+| --------------- | ------------------------------ |
+| `←` `→` `↑` `↓` | Move cursor                    |
+| `Backspace`     | Delete character before cursor |
+| `Ctrl+S`        | Save file                      |
+| `Ctrl+Q`        | Exit editor                    |
 
 ## Building
 
@@ -45,13 +45,13 @@ If the file does not exist, it will be created automatically. Defaults to `defau
 
 ### Core Components
 
-| File | Purpose |
-|------|---------|
-| `src/main.c` | Entry point, terminal initialization |
-| `src/editor.c` | Editor operations (read, write, save, move) |
-| `src/utils.c` | Utility functions |
-| `include/editor.h` | Editor struct and public API |
-| `include/utils.h` | Utility declarations |
+| File               | Purpose                                     |
+| ------------------ | ------------------------------------------- |
+| `src/main.c`       | Entry point, terminal initialization        |
+| `src/editor.c`     | Editor operations (read, write, save, move) |
+| `src/utils.c`      | Utility functions                           |
+| `include/editor.h` | Editor struct and public API                |
+| `include/utils.h`  | Utility declarations                        |
 
 ### Editor Flow
 
@@ -66,7 +66,7 @@ If the file does not exist, it will be created automatically. Defaults to `defau
 
 ### Dependencies
 
-- **dynamic-Strings** (`libs/dynamic-Strings/`) - Custom C string library with automatic buffer management
+- **dynamic-Strings**  - Custom C string library with automatic buffer management. Implement with **FetchContent_Declare**
 
 ## Concepts Explored
 
@@ -98,10 +98,6 @@ raw-Editor/
 │   ├── main.c              # Entry point
 │   ├── editor.c            # Editor implementation
 │   └── utils.c             # Utility functions
-├── libs/
-│   └── dynamic-Strings/    # String library
-│       ├── include/
-│       └── src/
 └── build/                 # Build output
 ```
 
