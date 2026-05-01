@@ -1,4 +1,4 @@
-name: Create Release
+name: Build and Release
 
 on:
   push:
@@ -9,11 +9,22 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create Release
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Rename binary
+        run: mv build/main raw-editor
+
+      - name: Create Release and Upload
         uses: softprops/action-gh-release@v2
+        with:
+          files: raw-editor
